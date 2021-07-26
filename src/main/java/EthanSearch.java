@@ -2,6 +2,7 @@ import domain.Organisation;
 import domain.Ticket;
 import domain.User;
 
+import java.util.Map;
 import java.util.Scanner;
 
 import static domain.CommonUtil.printSearchableFields;
@@ -24,7 +25,16 @@ public class EthanSearch {
             }
             switch (input) {
                 case "1":
-                    SearchStep.assembleParam(in);
+                    try {
+                        Map<String, String> param = SearchStep.assembleParam(in);
+                        SearchStep searchStep = new SearchStep();
+                        searchStep.search(param.get("key"), param.get("value"), EntityType.valueOf(param.get("type")))
+                                .forEach(System.out::println);
+                    } catch (NoSuchFieldException e) {
+                        System.out.println("No such field in the Entity, " +
+                                "please check list of searchable fields by press 2");
+                        continue;
+                    }
                     break;
                 case "2":
                     printSearchableFields(User.class.getDeclaredFields(), "User");

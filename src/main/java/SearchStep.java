@@ -1,4 +1,7 @@
 import config.DataPreparation;
+import domain.Organisation;
+import domain.Ticket;
+import domain.User;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
@@ -14,34 +17,53 @@ public class SearchStep {
         DataPreparation.loadData();
     }
 
-    public static void assembleParam(Scanner in) {
+    public static Map<String, String> assembleParam(Scanner in) throws NoSuchFieldException {
         Map<String, String> param = new HashMap<>();
         String info = "select 1. User 2. Ticket 3. Organisation";
-        System.out.println(info);
+        while(param.isEmpty()){
+            System.out.println(info);
+            String inputEntityType = in.nextLine();
+            switch (inputEntityType) {
+                case "1":
+                    param.put("type", "USER");
+                    break;
+                case "2":
+                    param.put("type", "TICKET");
+                    break;
+                case "3":
+                    param.put("type", "ORGANISATION");
+                    break;
+                default:
+                    System.out.println("no such entity type\n");
+            }
+        }
+
+        System.out.println("enter key");
+        String inputKey = in.nextLine();
+        param.put("key", inputKey);
+        validKeyCheck(param);
+        System.out.println("enter value");
         String input = in.nextLine();
-        switch (input) {
-            case "1":
-                param.put("type", "USER");
+        param.put("value", input);
+        return param;
+    }
+
+
+    private static void validKeyCheck(Map<String, String> param) throws NoSuchFieldException {
+        switch (param.get("type")) {
+            case "USER":
+                User.class.getDeclaredField(param.get("key"));
                 break;
-            case "2":
-                param.put("type", "TICKET");
+            case "TICKET":
+                Ticket.class.getDeclaredField(param.get("key"));
                 break;
-            case "3":
-                param.put("type", "ORGANISATION");
+            case "ORGANISATION":
+                Organisation.class.getDeclaredField(param.get("key"));
                 break;
             default:
         }
-        System.out.println("enter key");
-        input = in.nextLine();
-        param.put("key", input);
-        System.out.println("enter value");
-        input = in.nextLine();
-        param.put("value", input);
-
-        SearchStep searchStep = new SearchStep();
-        searchStep.search(param.get("key"), param.get("value"), EntityType.valueOf(param.get("type")))
-                .forEach(System.out::println);
     }
+
 
     public List<?> search(String key, String value, EntityType type) {
         switch (type) {
