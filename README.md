@@ -9,5 +9,5 @@ Download repo
 
 Go into repo root path simply run (chmod file if no permission)
 ```bash
-    java -jar memory-search.jar
+    java -jar ethan-search.jar
 ```
