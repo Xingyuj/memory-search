@@ -11,3 +11,9 @@ Go into repo root path simply run (chmod file if no permission)
 ```bash
     java -jar ethan-search.jar
 ```
+
+### How to test
+Go into repo root path simply run
+```bash
+    mvn test
+```
